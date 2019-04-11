@@ -1,0 +1,13 @@
+[remap]
+
+importer="image"
+type="Image"
+path="res://.import/curses_640x300.png-fc4241ff4ef016d54053cde7218d9147.image"
+
+[deps]
+
+source_file="res://curses_640x300.png"
+dest_files=[ "res://.import/curses_640x300.png-fc4241ff4ef016d54053cde7218d9147.image" ]
+
+[params]
+
