@@ -78,7 +78,8 @@ func _ready():
 	
 func initialize(path, valid):
 	$"../LoadingScreen".visible = true
-	yield(get_tree().create_timer(0.01), "timeout")
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
 	compile_events()
 	generate_buses()
 	refresh_log()
@@ -476,5 +477,5 @@ func set_ignore(UID, type = IgnoreType):
 			
 	msg("Setting ignore to %s" % item.ignored)
 		
-func msg(text, color = Global.colors.WHITE):
+func msg(text, color := Global.colors.WHITE):
 	Debug.msg(text, self, color)

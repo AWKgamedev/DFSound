@@ -30,10 +30,6 @@ Global="*res://Global.tscn"
 
 gdscript/warnings/enable=false
 
-[display]
-
-window/vsync/use_vsync=false
-
 [gui]
 
 theme/custom="res://MainTheme.tres"

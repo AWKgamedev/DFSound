@@ -164,7 +164,7 @@ margin_right = 8.0
 margin_bottom = 9.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
-text = "0.1"
+text = "0.1.0"
 align = 2
 clip_text = true
 
@@ -188,7 +188,7 @@ focus_mode = 1
 mouse_filter = 0
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
-text = "http://bay12games.com/dwarves/dev.html"
+text = "https://github.com/AWKgamedev/DFSound"
 align = 2
 clip_text = true
 script = ExtResource( 6 )

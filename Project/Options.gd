@@ -118,4 +118,4 @@ func dialog_closed():
 		
 func msg(text):
 	var Debug = get_tree().get_root().find_node("Debug", true, false)
-	Debug.msg(text, self, "gray")
+	Debug.msg(text, self, Global.colors.LGRAY)

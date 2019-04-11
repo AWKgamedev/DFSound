@@ -336,7 +336,7 @@ func update_tree_height(min_height = 0, max_height = -1):
 	tree.rect_min_size.y = (max(Global.font_size.y, 16) * items) + 18
 
 func msg(text):
-	Debug.msg(text, self, "gray")
+	Debug.msg(text, self, Global.colors.LGRAY)
 
 func _on_VolumeSlider_value_changed(value):
 	AudioServer.set_bus_volume_db(bus_index, value)
