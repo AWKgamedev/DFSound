@@ -225,11 +225,13 @@ func parse_font(path):
 	if error == OK:
 		var img_data = src_img.get_data()
 		var new_data = PoolByteArray()
-			
+		
+		#print("Image Format: %s" % src_img.get_format())
 		#Generate our own image with alpha based on the original
 		match src_img.get_format():
 			Image.FORMAT_RGB8:
 				for pp in range(0, img_data.size(), 3):
+					#print("R:%s, G:%s, B:%s" % [img_data[pp], img_data[pp+1], img_data[pp+2]]) 
 					new_data.append(img_data[pp])
 					new_data.append(img_data[pp+1])
 					new_data.append(img_data[pp+2])
@@ -241,6 +243,7 @@ func parse_font(path):
 						
 			Image.FORMAT_RGBA8:
 				for pp in range(0, img_data.size(), 4):
+					#print("R:%s, G:%s, B:%s, A:%s" % [img_data[pp], img_data[pp+1], img_data[pp+2], img_data[pp+3]]) 
 					new_data.append(img_data[pp])
 					new_data.append(img_data[pp+1])
 					new_data.append(img_data[pp+2])
@@ -248,7 +251,7 @@ func parse_font(path):
 					if pixel == font_chroma_key:
 						new_data.append(0)
 					else:
-						new_data.append(255)
+						new_data.append(img_data[pp+3])
 			_:
 				print("Invalid image format (%s)" % src_img.get_format())
 				self.font_path = default_font_path

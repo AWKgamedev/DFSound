@@ -188,4 +188,4 @@ func unmute(type = MuteType):
 			msg("Unmuted!")
 		
 func msg(text):
-	Debug.msg(text, self, Global.colors.CYAN)
+	Debug.msg(text, self, Global.colors.LCYAN)

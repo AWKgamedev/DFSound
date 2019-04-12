@@ -4,13 +4,8 @@ var Save = load("res://Saveable.gd").new()
 onready var Debug = get_tree().get_root().find_node("Debug", true, false)
 var rng = RandomNumberGenerator.new()
 
-var copylog_path = "res://copylog.txt"
-
-var copylog = File.new()
 var dir = Directory.new()
-var latest_log = ""
 var latest_length = 0
-var latest_md5 = ""
 var unprocessed_strings = []
 
 var max_pack_folder_depth = 3
@@ -20,7 +15,6 @@ var strings_per_frame = 7
 var update_rate = 0.1
 var update_timer = 0.0
 var same_event_concurrency = false
-var play_loops_on_startup = false
 
 var first_process = true
 var gamelog_found = true
@@ -65,7 +59,7 @@ var parse_legacy = true
 var soundnode = load("res://SoundEvent.tscn")
 
 func _ready():
-	Save.initialize("Logging", ["update_rate", "max_pack_folder_depth", "strings_per_frame", "active_threshold", "play_loops_on_startup", "ignored_items"], self)
+	Save.initialize("Logging", ["update_rate", "max_pack_folder_depth", "strings_per_frame", "active_threshold", "ignored_items"], self)
 	rng.randomize()
 	
 	initialize("", true)
@@ -88,9 +82,7 @@ func initialize(path, valid):
 func game_path_changed(path, valid):
 	first_process = true
 	gamelog_found = true
-	latest_log = ""
 	latest_length = 0
-	latest_md5 = ""
 	
 func _process(delta):
 	update_timer += delta
@@ -327,38 +319,30 @@ func refresh_log():
 	var exists = check_file(gamelog_path)
 	if exists:
 		gamelog_found = true
-		var current_md5 = copylog.get_md5(gamelog_path)
+		var file = File.new()
 		
-		if current_md5 != latest_md5:
-			latest_md5 = current_md5
-			if copylog.is_open():
-				copylog.close()
-			
-			dir.copy(gamelog_path, copylog_path)
-			
-			copylog.open(copylog_path, File.READ)
-			
-			latest_log = copylog.get_buffer(copylog.get_len()).get_string_from_ascii()
-			var current_length = latest_log.length()
-
-			var diff_length = current_length - latest_length
-
-			if diff_length > 0:
-				var new_diff = latest_log.right(latest_length).strip_edges(true, true)
+		file.open(gamelog_path, File.READ)
+		var new_length = file.get_len()
+		
+		if new_length != latest_length:
+			if first_process:
+				latest_length = new_length
+				first_process = false
+				return true
+			else:
+				file.seek(latest_length)
+				var new_log = file.get_buffer(new_length - latest_length)
+				file.close()
+				latest_length = new_length
 				
+				new_log = new_log.get_string_from_utf8()
 				#Split mode
-				for ss in new_diff.split("\n"):
-					if first_process:
-						unprocessed_strings.push_back(ss)
-					else:
-						unprocessed_strings.append(ss)
-
+				for ss in new_log.split("\n"):
+					unprocessed_strings.append(ss)
+	
 				#Batched mode
-				#unprocessed_strings.append(new_diff)
-
-			latest_length = current_length
-			
-			copylog.close()
+				#unprocessed_strings.append(new_log)
+	
 	else:
 		if gamelog_found:
 			msg("Can't open gamelog!")
@@ -380,7 +364,7 @@ func process_string(amt):
 			line_amt += 1
 			
 			for event in compiled_events:
-				if !first_process or (play_loops_on_startup and event.loop == "start"):
+				if !first_process:
 					if !already_played_events.has(event) or same_event_concurrency == true:
 						#msg("Looking at event %s" % event)
 						var result = event.pattern.search(string)
